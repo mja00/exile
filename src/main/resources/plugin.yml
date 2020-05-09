@@ -8,3 +8,12 @@ website: https://mja00.dev
 commands:
   exile:
     description: Player exile control
+permissions:
+  exile.notify:
+    description: Allows the player to be notified of Exile reports
+  exile.approve:
+    description: Allows the player to approve exiles which will then exile them
+  exile.edit:
+    description: Allows the player to edit the config using commands
+  exile.immune:
+    description: Makes the player immune to exile reports

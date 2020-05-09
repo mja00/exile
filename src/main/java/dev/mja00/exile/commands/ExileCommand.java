@@ -48,15 +48,23 @@ public class ExileCommand implements CommandExecutor {
                 }
             // Config settings
             } else if (args[0].equalsIgnoreCase("set")) {
-                if (args[1].equalsIgnoreCase("location")) {
-                    Location playerLoc = senderPlayer.getLocation();
-                    String worldName = playerLoc.getWorld().getName();
-                    int x = playerLoc.getBlockX(), y = playerLoc.getBlockY(), z = playerLoc.getBlockZ();
-                    config.set("world", worldName);
-                    config.set("x", x);
-                    config.set("y", y);
-                    config.set("z", z);
-                    plugin.saveConfig();
+                if (senderPlayer.hasPermission("exile.edit")) {
+                    if (args[1].equalsIgnoreCase("location")) {
+                        Location playerLoc = senderPlayer.getLocation();
+                        String worldName = playerLoc.getWorld().getName();
+                        int x = playerLoc.getBlockX(), y = playerLoc.getBlockY(), z = playerLoc.getBlockZ();
+                        config.set("world", worldName);
+                        config.set("x", x);
+                        config.set("y", y);
+                        config.set("z", z);
+                        plugin.saveConfig();
+                        senderPlayer.sendMessage(ChatColor.GREEN + "Config updated.");
+                    } else if (args[1].equalsIgnoreCase("announce")) {
+                        config.set("announceExile", !config.getBoolean("announceExile"));
+                        plugin.saveConfig();
+                        senderPlayer.sendMessage(ChatColor.GREEN + "Config updated. Announce Exile set to " + config.getBoolean("announceExile"));
+
+                    }
                 }
             // The exile report section
             } else {
@@ -64,12 +72,15 @@ public class ExileCommand implements CommandExecutor {
                 if (target == null){
                     senderPlayer.sendMessage(ChatColor.RED + "That player does not exist, try again.");
                 } else {
-                    String reason = getReport(args, 1);
-                    getLogger().info(senderPlayer.getDisplayName() + " wants " + target.getDisplayName() + " exiled because: " + reason);
-                    senderPlayer.sendMessage(ChatColor.AQUA + "You write down the reason and attach it to a bird. It flies off in the direction of the castle.");
-                    sendExileReport(senderPlayer, target, reason);
+                    if (target.hasPermission("exile.immune")) {
+                        senderPlayer.sendMessage(ChatColor.RED + "This player is immune to being exiled.");
+                    } else {
+                        String reason = getReport(args, 1);
+                        getLogger().info(senderPlayer.getDisplayName() + " wants " + target.getDisplayName() + " exiled because: " + reason);
+                        senderPlayer.sendMessage(ChatColor.AQUA + "You write down the reason and attach it to a bird. It flies off in the direction of the castle.");
+                        sendExileReport(senderPlayer, target, reason);
+                    }
                 }
-
             }
         } else {
             System.out.println("Commands must be sent by players.");
