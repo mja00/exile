@@ -6,7 +6,7 @@
 
     <groupId>dev.mja00</groupId>
     <artifactId>exile</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Exile</name>
