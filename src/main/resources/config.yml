@@ -1,0 +1,6 @@
+# By default it sends exiled players to the roof of the Nether. Either manually change it or run /exile set location where you want the location.
+x: 0
+y: 130
+z: 0
+world: 'world_nether'
+announceExile: false
