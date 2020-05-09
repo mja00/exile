@@ -49,7 +49,14 @@ public class ExileCommand implements CommandExecutor {
             // Config settings
             } else if (args[0].equalsIgnoreCase("set")) {
                 if (args[1].equalsIgnoreCase("location")) {
-
+                    Location playerLoc = senderPlayer.getLocation();
+                    String worldName = playerLoc.getWorld().getName();
+                    int x = playerLoc.getBlockX(), y = playerLoc.getBlockY(), z = playerLoc.getBlockZ();
+                    config.set("world", worldName);
+                    config.set("x", x);
+                    config.set("y", y);
+                    config.set("z", z);
+                    plugin.saveConfig();
                 }
             // The exile report section
             } else {
