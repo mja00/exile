@@ -44,16 +44,11 @@ public class ExileCommand implements CommandExecutor {
     }
 
     public static String getReport(String[] args, int indexStart) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (int i = indexStart; i < args.length; i++) {
-            if (i == args.length) {
-                output += args[i];
-            } else {
-                output += args[i] + " ";
-            }
-
+            output.append(args[i] + " ");
         }
-        return output.trim();
+        return output.toString().trim();
     }
 
     public static void sendExileReport(Player sender, Player target, String reason) {
