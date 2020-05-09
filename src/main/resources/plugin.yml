@@ -1,0 +1,10 @@
+name: Exile
+version: ${project.version}
+main: dev.mja00.exile.Exile
+api-version: 1.13
+authors: [mja00]
+description: Allows you to exile players to a configured location
+website: https://mja00.dev
+commands:
+  exile:
+    description: Player exile control
