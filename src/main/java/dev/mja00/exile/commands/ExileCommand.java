@@ -28,10 +28,12 @@ public class ExileCommand implements CommandExecutor {
             } else {
                 Player target = Bukkit.getPlayerExact(args[0]);
                 if (target == null){
-                    senderPlayer.sendMessage("That player does not exist, try again.");
+                    senderPlayer.sendMessage(ChatColor.RED + "That player does not exist, try again.");
                 } else {
-                    String reason = getReport(args, 2);
+                    String reason = getReport(args, 1);
                     getLogger().info(senderPlayer.getDisplayName() + " wants " + target.getDisplayName() + " exiled because: " + reason);
+                    senderPlayer.sendMessage(ChatColor.AQUA + "You write down the reason and attach it to a bird. It flies off in the direction of the castle.");
+                    sendExileReport(senderPlayer, target, reason);
                 }
 
             }
@@ -44,8 +46,23 @@ public class ExileCommand implements CommandExecutor {
     public static String getReport(String[] args, int indexStart) {
         String output = "";
         for (int i = indexStart; i < args.length; i++) {
-            output += args[i] + " ";
+            if (i == args.length) {
+                output += args[i];
+            } else {
+                output += args[i] + " ";
+            }
+
         }
-        return output;
+        return output.trim();
     }
+
+    public static void sendExileReport(Player sender, Player target, String reason) {
+        for (Player all : Bukkit.getOnlinePlayers()) {
+            if (all.hasPermission("exile.notify")) {
+                all.sendMessage(ChatColor.AQUA + "A bird lands at your with a scroll attached to it. It reads: ");
+                all.sendMessage(ChatColor.GREEN + "My lord, I'd like " + target.getDisplayName() + " exiled because " + reason + ". Signed " + sender.getDisplayName());
+            }
+        }
+    }
+
 }
