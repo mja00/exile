@@ -1,16 +1,20 @@
 package dev.mja00.exile.commands;
 
 import dev.mja00.exile.Exile;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.w3c.dom.Text;
+
+import java.awt.*;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -80,13 +84,14 @@ public class ExileCommand implements CommandExecutor {
                 if (target == null){
                     senderPlayer.sendMessage(ChatColor.RED + "That player does not exist, try again.");
                 } else {
-                    if (target.hasPermission("exile.immune")) {
+                    if (!target.hasPermission("exile.immune")) {
                         senderPlayer.sendMessage(ChatColor.RED + "This player is immune to being exiled.");
                     } else {
                         String reason = getReport(args, 1);
                         getLogger().info(senderPlayer.getDisplayName() + " wants " + target.getDisplayName() + " exiled because: " + reason);
                         senderPlayer.sendMessage(ChatColor.AQUA + "You write down the reason and attach it to a bird. It flies off in the direction of the castle.");
                         sendExileReport(senderPlayer, target, reason);
+                        senderPlayer.playSound(senderPlayer.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1f, 1f);
                     }
                 }
             }
@@ -107,8 +112,22 @@ public class ExileCommand implements CommandExecutor {
     public static void sendExileReport(Player sender, Player target, String reason) {
         for (Player all : Bukkit.getOnlinePlayers()) {
             if (all.hasPermission("exile.notify")) {
-                all.sendMessage(ChatColor.AQUA + "A bird lands at your with a scroll attached to it. It reads: ");
-                all.sendMessage(ChatColor.GREEN + "My lord, I'd like " + target.getDisplayName() + " exiled because " + reason + ". Signed " + sender.getDisplayName());
+                all.playSound(all.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1f, 1f);
+                all.sendMessage(ChatColor.AQUA + "A bird lands at your feet with a scroll attached to it. It reads: ");
+                all.sendMessage(ChatColor.GREEN + "My lord, \nI'd like " + target.getDisplayName() + " exiled because " + reason + ". \n- Signed " + sender.getDisplayName());
+                TextComponent confirm = new TextComponent("[Exile]");
+                confirm.setColor(net.md_5.bungee.api.ChatColor.RED);
+                confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exile approve " + target.getDisplayName()));
+                confirm.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder("Click this to exile " + target.getDisplayName()).color(net.md_5.bungee.api.ChatColor.GRAY).create()));
+                TextComponent pardon = new TextComponent("[Pardon]");
+                pardon.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+                pardon.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exile pardon"));
+                pardon.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder("Click this to pardon " + target.getDisplayName()).color(net.md_5.bungee.api.ChatColor.GRAY).create()));
+                confirm.addExtra(new TextComponent(" "));
+                confirm.addExtra(pardon);
+                all.spigot().sendMessage(confirm);
             }
         }
     }
