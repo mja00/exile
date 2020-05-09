@@ -60,8 +60,16 @@ public class ExileCommand implements CommandExecutor {
                         plugin.saveConfig();
                         senderPlayer.sendMessage(ChatColor.GREEN + "Config updated.");
                     } else if (args[1].equalsIgnoreCase("announce")) {
-                        config.set("announceExile", !config.getBoolean("announceExile"));
-                        plugin.saveConfig();
+                        if (args.length <= 2) {
+                            config.set("announceExile", !config.getBoolean("announceExile"));
+                            plugin.saveConfig();
+                        } else if (args[2].equalsIgnoreCase("true")) {
+                            config.set("announceExile", true);
+                            plugin.saveConfig();
+                        } else {
+                            config.set("announceExile", false);
+                            plugin.saveConfig();
+                        }
                         senderPlayer.sendMessage(ChatColor.GREEN + "Config updated. Announce Exile set to " + config.getBoolean("announceExile"));
 
                     }

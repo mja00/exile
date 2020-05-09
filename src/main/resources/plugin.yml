@@ -7,7 +7,7 @@ description: Allows you to exile players to a configured location
 website: https://mja00.dev
 commands:
   exile:
-    description: Player exile control
+    description: Player exile control. Using /exile <player> <reason> it will notify everyone with exile.notify of the report. Using /exile approve <player> will exile the player specified, teleporting them to the configred locatino.
 permissions:
   exile.notify:
     description: Allows the player to be notified of Exile reports
